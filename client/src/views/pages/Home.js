@@ -4,7 +4,9 @@ import Input from '../../components/common/Form/Input';
 import Button from '../../components/common/Button';
 
 const HomePage = ({ history }) => {
-  const { searchValue, onChange, setMovieTitle } = useContext(MovieContext);
+  const { searchValue, onChange, setMovieTitle, setIsLoading } = useContext(
+    MovieContext
+  );
 
   const searchInput = useRef(null);
 
@@ -16,6 +18,7 @@ const HomePage = ({ history }) => {
 
     searchInput.current.className = 'form-control is-valid';
     setMovieTitle(searchValue.toLowerCase());
+    setIsLoading(true);
     history.push(`/movies/${searchValue.toLowerCase()}`);
   };
 
@@ -31,7 +34,12 @@ const HomePage = ({ history }) => {
         feedback="Please provide a movie title."
         help="Search a movie that you would like to add into your list."
       />
-      <Button label="Search" type="submit" onClick={e => handleOnSubmit(e)} />
+      <Button
+        className="btn btn-primary btn-lg btn-block"
+        label="Search"
+        type="submit"
+        onClick={e => handleOnSubmit(e)}
+      />
     </form>
   );
 };

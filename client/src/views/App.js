@@ -6,6 +6,7 @@ import ProfilePage from './pages/Profile';
 import Layout from '../layout';
 import NotFound from './pages/NotFound';
 import MoviePage from './pages/Movie';
+import MovieDetailPage from './pages/MovieDetail';
 
 const App = () => {
   return (
@@ -13,8 +14,13 @@ const App = () => {
       <Layout>
         <Switch>
           <Route
-            path="/movies/:title/:id?"
+            exact
+            path="/movies/:title"
             render={props => <MoviePage {...props} />}
+          />
+          <Route
+            path="/movies/:title/:id"
+            render={props => <MovieDetailPage {...props} />}
           />
           <Route path="/profile" render={props => <ProfilePage {...props} />} />
           <Route path="/not-found" render={props => <NotFound {...props} />} />

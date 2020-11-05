@@ -2,10 +2,15 @@ import React, { useState, useEffect } from 'react';
 import MovieContext from '../context/movies';
 import services from '../services';
 
+const { getMovieState, setMoviesToLocal } = services.movies;
+const { getUserList, setUserListToLocal } = services.user;
+
 const Layout = ({ children }) => {
-  const [movies, setMovies] = useState(services.movies.getMovieState());
+  const [movieData, setMovieData] = useState(getMovieState());
   const [searchValue, setSearchValue] = useState('');
   const [movieTitle, setMovieTitle] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [userList, setUserList] = useState(getUserList());
 
   const handleOnChange = e => {
     const { value } = e.currentTarget;
@@ -17,15 +22,20 @@ const Layout = ({ children }) => {
     setSearchValue(value);
   };
 
-  useEffect(() => services.movies.setMoviesToLocal(movies), [movies]);
+  useEffect(() => setMoviesToLocal(movieData), [movieData]);
+  useEffect(() => setUserListToLocal(userList), [userList]);
 
   const value = {
-    movies,
-    setMovies,
+    userList,
+    setUserList,
+    movieData,
+    setMovieData,
     searchValue,
     setSearchValue,
     movieTitle,
     setMovieTitle,
+    isLoading,
+    setIsLoading,
     onChange: e => handleOnChange(e),
   };
 
