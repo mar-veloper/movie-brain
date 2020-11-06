@@ -38,6 +38,7 @@ module.exports = async (req, res) => {
   const endpoint = id ? specificEndpoint : generalEndpoint;
 
   const { data } = await axios.get(endpoint);
+  console.log({ id, endpoint, data });
   const { Error: error, Search: moviesSearched } = data;
 
   if (error) return res.status(404).json({ message: error });

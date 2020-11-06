@@ -4,8 +4,8 @@ import Axios from 'axios';
 import { apiUrl } from '../../config.json';
 import services from '../../services';
 import Button from '../../components/common/Button';
-import { Link } from 'react-router-dom';
 import Input from '../../components/common/Form/Input';
+import Card from '../../components/common/Card';
 
 const { getFromLocal, setToLocal } = services.locals;
 
@@ -13,73 +13,31 @@ const MoviePage = ({ match, history }) => {
   const {
     movieData,
     setMovieData,
-    setUserList,
     userList,
     searchValue,
     onChange,
-    setMovieTitle,
+    setLastSearched,
     setIsLoading,
+    handleRecommend,
+    handleToWatch,
   } = useContext(MovieContext);
 
   const { title } = match.params;
 
   const getMovies = async () => {
-    if (title === getFromLocal('movieTitle')) return setIsLoading(false);
-    const { data } = await Axios.get(`${apiUrl}/movies/${title}`);
-    console.log('Fetched');
-    setMovieData(data);
-    setToLocal('movieTitle', title);
-    setIsLoading(false);
+    if (title === getFromLocal('lastSearched')) return setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const { data } = await Axios.get(`${apiUrl}/movies/${title}`);
+      setMovieData(data);
+      setToLocal('lastSearched', title);
+      setIsLoading(false);
+    } catch (err) {
+      history.push(`/not-found}`);
+    }
   };
 
   useEffect(() => getMovies(), [title]);
-
-  const handleRecommend = item => {
-    const itemFromlist = userList[item._id];
-
-    if (!itemFromlist) {
-      return setUserList({
-        ...userList,
-        [item._id]: { ...itemFromlist, movie: item, isRecommended: true },
-      });
-    }
-
-    if (!itemFromlist.toWatch) {
-      const res = Object.assign({}, userList);
-      delete res[item._id];
-      return setUserList(res);
-    }
-
-    return setUserList({
-      ...userList,
-      [item._id]: {
-        ...itemFromlist,
-        isRecommended: !itemFromlist.isRecommended,
-      },
-    });
-  };
-
-  const handleToWatch = item => {
-    const itemFromlist = userList[item._id];
-
-    if (!itemFromlist) {
-      return setUserList({
-        ...userList,
-        [item._id]: { ...itemFromlist, movie: item, toWatch: true },
-      });
-    }
-
-    if (!itemFromlist.isRecommended) {
-      const res = Object.assign({}, userList);
-      delete res[item._id];
-      return setUserList(res);
-    }
-
-    return setUserList({
-      ...userList,
-      [item._id]: { ...itemFromlist, toWatch: !itemFromlist.toWatch },
-    });
-  };
 
   const handleOnSubmit = e => {
     e.preventDefault();
@@ -88,12 +46,12 @@ const MoviePage = ({ match, history }) => {
     }
 
     searchInput.current.className = 'form-control is-valid';
-    setMovieTitle(searchValue.toLowerCase());
+    setLastSearched(searchValue.toLowerCase());
     setIsLoading(true);
     history.push(`/movies/${searchValue.toLowerCase()}`);
   };
 
-  const movies = movieData.movies.sort((a, b) => b.year - a.year);
+  const movies = movieData && movieData.movies.sort((a, b) => b.year - a.year);
   const searchInput = useRef(null);
 
   return (
@@ -110,78 +68,33 @@ const MoviePage = ({ match, history }) => {
           help="Search a movie that you would like to add into your list."
         />
         <Button
-          className="btn btn-primary btn-lg btn-block"
+          className="dark btn-lg btn-block"
           label="Search"
           type="submit"
           onClick={e => handleOnSubmit(e)}
         />
       </form>
-      <div className="mt-5">
-        {movies.map(item => {
-          const { _id, title: cardTitle, image, type, year } = item;
-          return (
-            <div
-              key={`${_id}-${cardTitle}`}
-              className="card mb-3 col-md-*"
-              style={{ maxWidth: '540px' }}
-            >
-              <div className="row no-gutters">
-                <div className="col-md-4">
-                  <img
-                    src={
-                      image !== 'N/A'
-                        ? image
-                        : 'https://via.placeholder.com/200/300'
-                    }
-                    className="card-img"
-                    alt={cardTitle}
-                  />
-                </div>
-                <div className="col-md-8">
-                  <div className="card-body">
-                    <Link to={`${title}/${_id}`}>
-                      <h5 className="card-title">{cardTitle}</h5>
-                    </Link>
-                    <p className="card-text">
-                      <small className="text-muted">
-                        {type.toUpperCase()} ({year})
-                      </small>
-                    </p>
-                    <div className="mt-3">
-                      <Button
-                        label={
-                          userList[_id]?.toWatch
-                            ? 'Added To Watch '
-                            : 'To Watch'
-                        }
-                        className={
-                          userList[_id]?.toWatch
-                            ? 'dark disabled mr-3'
-                            : 'dark mr-3'
-                        }
-                        onClick={() => handleToWatch(item)}
-                      />
-                      <Button
-                        label={
-                          userList[_id]?.isRecommended
-                            ? 'Recommended'
-                            : 'Recommend'
-                        }
-                        className={
-                          userList[_id]?.isRecommended
-                            ? 'success disabled'
-                            : 'success'
-                        }
-                        onClick={() => handleRecommend(item)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      {movieData && (
+        <div className="mt-5 d-flex flex-wrap">
+          {movies.map(item => {
+            const { _id, title: cardTitle, image, type, year } = item;
+            return (
+              <Card
+                key={`${year}-${cardTitle}-${_id}`}
+                id={_id}
+                image={image}
+                title={cardTitle}
+                year={year}
+                type={type}
+                toWatch={userList[_id]?.toWatch}
+                isRecommended={userList[_id]?.isRecommended}
+                onToWatch={() => handleToWatch(item)}
+                onRecommend={() => handleRecommend(item)}
+              />
+            );
+          })}
+        </div>
+      )}
     </>
   );
 };
