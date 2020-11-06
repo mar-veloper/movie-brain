@@ -9,7 +9,7 @@ const setMoviesToLocal = item => services.locals.setToLocal('movies', item);
 
 const getSpecificMovie = () => {
   const localMovie = services.locals.getFromLocal('specificMovie');
-  return localMovie || null;
+  return localMovie || { title: '', plot: '', image: '', actors: [] };
 };
 
 const setSpecificMovieToLocal = item =>

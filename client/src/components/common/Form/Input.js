@@ -15,6 +15,7 @@ const Input = React.forwardRef((props, ref) => {
     <div className="form-group">
       <label htmlFor={name}>{label}</label>
       <input
+        autoComplete="off"
         ref={ref}
         type={type}
         className="form-control"

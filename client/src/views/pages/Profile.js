@@ -6,8 +6,10 @@ const ProfilePage = () => {
   const { userList, handleToWatch, handleRecommend } = useContext(MovieContext);
   const userListArr = Object.values(userList);
 
-  const toWatchMovies = userListArr.filter(item => item.toWatch);
-  const recommendedMovies = userListArr.filter(item => item.isRecommended);
+  const toWatchMovies = userListArr.filter(item => item.toWatch).reverse();
+  const recommendedMovies = userListArr
+    .filter(item => item.isRecommended)
+    .reverse();
 
   return (
     <div className="container mt-5">

@@ -20,19 +20,7 @@ const MovieDetailPage = ({ match, history }) => {
 
   useEffect(() => fetchMovie(), [id]);
 
-  const {
-    title: pageTitle,
-    plot,
-    image,
-    actors,
-    language,
-    ratings,
-    director,
-    genre,
-    type,
-  } = specificMovie;
-
-  console.log(specificMovie);
+  const { title: pageTitle, plot, image, actors } = specificMovie;
 
   return (
     <div className="container">
@@ -58,43 +46,43 @@ const MovieDetailPage = ({ match, history }) => {
         </div>
       </div>
 
-      <h3 class="my-4">Available at</h3>
+      <h3 className="my-4">Available at</h3>
 
-      <div class="row">
-        <div class="col-md-3 col-sm-6 mb-4">
+      <div className="row">
+        <div className="col-md-3 col-sm-6 mb-4">
           <a href="https://www.netflix.com/" target="_">
             <img
-              class="img-fluid"
+              className="img-fluid"
               src="https://variety.com/wp-content/uploads/2020/05/netflix-logo.png"
               alt="netflix"
             />
           </a>
         </div>
 
-        <div class="col-md-3 col-sm-6 mb-4">
+        <div className="col-md-3 col-sm-6 mb-4">
           <a href="https://se.hbonordic.com/" target="_">
             <img
-              class="img-fluid"
+              className="img-fluid"
               src="https://ewscripps.brightspotcdn.com/2c/7a/2284f50e49c1b7595592ddfc51f5/hbo.png"
               alt="hbo"
             />
           </a>
         </div>
 
-        <div class="col-md-3 col-sm-6 mb-4">
+        <div className="col-md-3 col-sm-6 mb-4">
           <a href="https://viaplay.no/" target="_">
             <img
-              class="img-fluid"
+              className="img-fluid"
               src="https://www.flatpanels.dk/billeder/m-viaplaylogo2019.jpg"
               alt="viaplay"
             />
           </a>
         </div>
 
-        <div class="col-md-3 col-sm-6 mb-4">
+        <div className="col-md-3 col-sm-6 mb-4">
           <a href="https://www.primevideo.com/" target="_">
             <img
-              class="img-fluid"
+              className="img-fluid"
               src="https://www.pdvg.it/wp-content/uploads/2020/02/amazon-prime-video-pdvg.png"
               alt="prime video"
             />
